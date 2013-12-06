@@ -16,11 +16,14 @@ public class ObservableArrayList<T> extends Observable implements List<T> {
 	@Override
 	public boolean add(T e) {
 		boolean success = delegateList.add(e);
-		if(success){
-			this.setChanged();
-			this.notifyObservers(ListDataEvent.INTERVAL_ADDED);
+		try {
+			return success;
+		} finally {
+			if(success){
+				this.setChanged();
+				this.notifyObservers(ListDataEvent.INTERVAL_ADDED);
+			}
 		}
-		return success;
 	}
 
 	@Override
@@ -33,21 +36,56 @@ public class ObservableArrayList<T> extends Observable implements List<T> {
 	@Override
 	public boolean addAll(Collection<? extends T> c) {
 		boolean success = delegateList.addAll(c);
-		if(success){
-			this.setChanged();
-			this.notifyObservers(ListDataEvent.INTERVAL_ADDED);
+		try {
+			return success;
+		} finally {
+			if(success){
+				this.setChanged();
+				this.notifyObservers(ListDataEvent.INTERVAL_ADDED);
+			}
 		}
-		return success;
+	}
+	
+	
+	public boolean setElementToIndex(T element, int index){
+		int sourceindex = delegateList.indexOf(element);
+		if(sourceindex > -1){
+			return setElementToIndex(sourceindex, index);
+		} else {
+			return false;
+		}
+	}
+	
+	public boolean setElementToIndex(int sourceIndex, int targetIndex){
+		try {
+			if(		sourceIndex > -1 && 
+					targetIndex > -1 && 
+					sourceIndex != targetIndex && 
+					sourceIndex < size() &&
+					targetIndex < size()){
+				T element = delegateList.remove(sourceIndex);
+				delegateList.add(targetIndex, element);
+				return true;
+			} else {
+				return false;
+			}
+		} finally {
+			this.setChanged();
+			this.notifyObservers(ListDataEvent.CONTENTS_CHANGED);
+		}
 	}
 
 	@Override
 	public boolean addAll(int index, Collection<? extends T> c) {
 		boolean success = delegateList.addAll(index, c);
-		if(success){
-			this.setChanged();
-			this.notifyObservers(ListDataEvent.INTERVAL_ADDED);
+		try {
+			return success;
+		} finally {
+			if(success){
+				this.setChanged();
+				this.notifyObservers(ListDataEvent.INTERVAL_ADDED);
+			}
 		}
-		return success;
 	}
 
 	@Override
@@ -105,47 +143,71 @@ public class ObservableArrayList<T> extends Observable implements List<T> {
 	@Override
 	public boolean remove(Object o) {
 		boolean success = delegateList.remove(o);
-		if(success){
+		try {
+			return success;
+		} finally {
+			if(success){
+				this.setChanged();
+				this.notifyObservers(ListDataEvent.INTERVAL_REMOVED);
+			}
+		}
+	}
+
+	/** return element if index in range, else null */
+	@Override
+	public T remove(int index) {
+		try {
+			if (index > -1 && index < size()) {
+				T element = delegateList.remove(index);
+				return element;
+			} else {
+				return null;
+			}
+		} finally {
 			this.setChanged();
 			this.notifyObservers(ListDataEvent.INTERVAL_REMOVED);
 		}
-		return success;
-	}
-
-	@Override
-	public T remove(int index) {
-		T element = delegateList.remove(index);
-		this.setChanged();
-		this.notifyObservers(ListDataEvent.INTERVAL_REMOVED);
-		return element;
 	}
 
 	@Override
 	public boolean removeAll(Collection<?> c) {
 		boolean success = delegateList.removeAll(c);
-		if(success){
-			this.setChanged();
-			this.notifyObservers(ListDataEvent.INTERVAL_REMOVED);
+		try {
+			return success;
+		} finally {
+			if(success){
+				this.setChanged();
+				this.notifyObservers(ListDataEvent.INTERVAL_REMOVED);
+			}
 		}
-		return success;
 	}
 
 	@Override
 	public boolean retainAll(Collection<?> c) {
 		boolean success = delegateList.retainAll(c);
-		if(success){
-			this.setChanged();
-			this.notifyObservers(ListDataEvent.INTERVAL_REMOVED);
+		try {
+			return success;
+		} finally {
+			if(success){
+				this.setChanged();
+				this.notifyObservers(ListDataEvent.INTERVAL_REMOVED);
+			}
 		}
-		return success;
 	}
 
+	/** return replaced element or null if not possible */
 	@Override
 	public T set(int index, T element) {
-		T replaced = delegateList.set(index, element);
-		this.setChanged();
-		this.notifyObservers(ListDataEvent.CONTENTS_CHANGED);
-		return replaced;
+		T replaced = null; 
+		if(index > -1 && index < size()){
+			replaced = delegateList.set(index, element);
+		}
+		try {
+			return replaced;
+		} finally {
+			this.setChanged();
+			this.notifyObservers(ListDataEvent.CONTENTS_CHANGED);
+		}
 	}
 
 	@Override

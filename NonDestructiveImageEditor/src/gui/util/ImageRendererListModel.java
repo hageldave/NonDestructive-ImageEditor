@@ -42,6 +42,15 @@ public class ImageRendererListModel implements ListModel<ImageManipulation>, Obs
 		listeners.remove(l);
 	}
 
+	
+	public boolean removeElementAt(int index){
+		return renderer.removeManipulation(index) != null;
+	}
+
+	public boolean liftElement(int elementIndex, int levels) {
+		return renderer.liftElement(elementIndex, levels);
+	}
+
 	@Override
 	public void update(Observable o, Object arg) {
 		if(arg instanceof Integer){

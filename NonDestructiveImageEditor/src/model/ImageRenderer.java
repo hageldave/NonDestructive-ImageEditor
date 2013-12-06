@@ -54,6 +54,10 @@ public class ImageRenderer extends Observable implements Observer, PropertyChang
 			element.addPropertyChangeListener(this);
 		}
 	}
+	
+	public boolean liftElement(int elementIndex, int levels){
+		return manipulationlist.setElementToIndex(elementIndex, elementIndex-levels);
+	}
 
 	public ImageManipulation removeManipulation(int index) {
 		ImageManipulation removed = manipulationlist.remove(index);
