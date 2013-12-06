@@ -67,7 +67,7 @@ public class ImageNormalMapGenerator extends ImageManipulation {
 				} else {
 //					vec1_0 =1; 
 //					vec1_1 =0;
-					vec1_2= -getGreyF(image.getRGBA(x, y)); // fake pixel bei x+1 mit wert 0
+					vec1_2= 0; // fake pixel bei x+1 mit selbem wert
 				}
 				
 				if(y+r < height){
@@ -77,7 +77,7 @@ public class ImageNormalMapGenerator extends ImageManipulation {
 				} else {
 //					vec2_0 =0; 
 //					vec2_1 =1;
-					vec2_2= -getGreyF(image.getRGBA(x, y)); // fake pixel bei y+1 mit wert 0
+					vec2_2= 0; // fake pixel bei y+1 mit selbem wert
 				}
 				
 //				Eigentliches kreuzprodukt
