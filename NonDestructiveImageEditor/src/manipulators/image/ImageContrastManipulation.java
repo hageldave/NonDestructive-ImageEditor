@@ -32,7 +32,7 @@ public class ImageContrastManipulation extends ImageColorManipulation {
 	public void setThreshold(int threshold) {
 		int oldthreshold = contrast.getThreshold();
 		contrast.setThreshold(threshold);
-		notifyPropertyChange(new PropertyChangeEvent(this, "contrast_threshold", oldthreshold, threshold));
+		firePropertyChange(new PropertyChangeEvent(this, "contrast_threshold", oldthreshold, threshold));
 	}
 
 	public float getIntensity() {
@@ -42,7 +42,7 @@ public class ImageContrastManipulation extends ImageColorManipulation {
 	public void setIntensity(float intensity) {
 		float oldintensity = contrast.getIntensity();
 		contrast.setIntensity(intensity);
-		notifyPropertyChange(new PropertyChangeEvent(this, "contrast_intensity", oldintensity, intensity));
+		firePropertyChange(new PropertyChangeEvent(this, "contrast_intensity", oldintensity, intensity));
 	}
 	
 	

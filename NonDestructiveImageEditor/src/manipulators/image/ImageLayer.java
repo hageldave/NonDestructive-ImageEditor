@@ -29,7 +29,7 @@ public class ImageLayer extends ImageManipulation {
 	public void setTransparency(int transparencyplus) {
 		int oldval = getTransparencyplus();
 		transparency.setTransparencyplus(transparencyplus);
-		notifyPropertyChange(new PropertyChangeEvent(this, "image_transparency", oldval, transparencyplus));
+		firePropertyChange(new PropertyChangeEvent(this, "image_transparency", oldval, transparencyplus));
 	}
 
 	/** does no manipulation at all, just returns the argument.

@@ -27,7 +27,7 @@ public class ImageNormalMapGenerator extends ImageManipulation {
 	public void setRadius(int rad){
 		int oldval = r;
 		this.r = rad;
-		notifyPropertyChange(new PropertyChangeEvent(this, "normalmap_radius", oldval, rad));
+		firePropertyChange(new PropertyChangeEvent(this, "normalmap_radius", oldval, rad));
 	}
 	
 	public int getRadius(){

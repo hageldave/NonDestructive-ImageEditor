@@ -87,14 +87,25 @@ public class ImageRenderer extends Observable implements Observer, PropertyChang
 			return null;
 		}
 		// TODO:merge layers
-		return renderedLayers.getFirst().generateBufferedImage();// placeholder
+		try {
+			return renderedLayers.getFirst().generateBufferedImage();// placeholder
+		} finally {
+			System.gc();
+		}
 	}
 	
 	
 	public BufferedImage renderFull(){
 		LinkedList<PixelArray> renderedLayers = getRenderedLayers(getLayerTasks(), false);
+		if(renderedLayers.isEmpty()){
+			return null;
+		}
 		// TODO:merge layers
-		return renderedLayers.getFirst().generateBufferedImage();// placeholder
+		try {
+			return renderedLayers.getFirst().generateBufferedImage();// placeholder
+		} finally {
+			System.gc();
+		}
 	}
 	
 	
@@ -105,8 +116,12 @@ public class ImageRenderer extends Observable implements Observer, PropertyChang
 			if(im instanceof ImageLayer){
 				layertask = new LinkedList<>();
 				tasks.add(layertask);
+				layertask.add(im); // layers are filtered out later in getRenderedLayers
+			} else {
+				if(im.isEnabled()){
+					layertask.add(im);
+				}
 			}
-			layertask.add(im);
 		}
 		return tasks;
 	}
@@ -114,7 +129,10 @@ public class ImageRenderer extends Observable implements Observer, PropertyChang
 	private LinkedList<PixelArray> getRenderedLayers(LinkedList<LinkedList<ImageManipulation>> layertasklist, boolean fast){
 		LinkedList<PixelArray> renderedlayers = new LinkedList<>();
 		for(LinkedList<ImageManipulation> layertask: layertasklist){
-			renderedlayers.add(renderLayer((ImageLayer) layertask.pollFirst(), layertask, fast));
+			ImageLayer layer = (ImageLayer) layertask.pollFirst();
+			if(layer.isEnabled()){
+				renderedlayers.add(renderLayer(layer, layertask, fast));
+			}
 		}
 		return renderedlayers;
 	}

@@ -32,7 +32,7 @@ public class ImageSaturationManipulation extends ImageColorManipulation {
 	public void setSaturation(float sat) {
 		float oldsat = saturation.getSaturation();
 		saturation.setSaturation(sat);
-		notifyPropertyChange(new PropertyChangeEvent(this, "saturation_saturation", oldsat, sat));
+		firePropertyChange(new PropertyChangeEvent(this, "saturation_saturation", oldsat, sat));
 	}
 	
 	

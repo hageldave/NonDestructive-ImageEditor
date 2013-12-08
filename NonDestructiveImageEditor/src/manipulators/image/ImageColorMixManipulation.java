@@ -25,7 +25,7 @@ public class ImageColorMixManipulation extends ImageColorManipulation {
 	public void setRplus(int rplus) {
 		int oldval = getRplus();
 		colormix.setRplus(rplus);
-		notifyPropertyChange(new PropertyChangeEvent(this, "colormix_red", oldval, rplus));
+		firePropertyChange(new PropertyChangeEvent(this, "colormix_red", oldval, rplus));
 	}
 
 	public int getGplus() {
@@ -35,7 +35,7 @@ public class ImageColorMixManipulation extends ImageColorManipulation {
 	public void setGplus(int gplus) {
 		int oldval = getGplus();
 		colormix.setGplus(gplus);
-		notifyPropertyChange(new PropertyChangeEvent(this, "colormix_green", oldval, gplus));
+		firePropertyChange(new PropertyChangeEvent(this, "colormix_green", oldval, gplus));
 	}
 
 	public int getBplus() {
@@ -45,7 +45,7 @@ public class ImageColorMixManipulation extends ImageColorManipulation {
 	public void setBplus(int bplus) {
 		int oldval = getBplus();
 		colormix.setBplus(bplus);
-		notifyPropertyChange(new PropertyChangeEvent(this, "colormix_blue", oldval, bplus));
+		firePropertyChange(new PropertyChangeEvent(this, "colormix_blue", oldval, bplus));
 	}
 
 	@Override

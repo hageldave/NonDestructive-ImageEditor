@@ -10,8 +10,21 @@ import model.PixelArray;
 
 public abstract class ImageManipulation {
 	
+	private boolean enabled = true;
 	private LinkedList<PropertyChangeListener> listeners = new LinkedList<>();
 	private JComponent guiEditor;
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		boolean oldVal = this.enabled;
+		this.enabled = enabled;
+		if(oldVal != enabled){
+			firePropertyChange(new PropertyChangeEvent(this, enabled ? "enabled":"disabled", oldVal, enabled));
+		}
+	}
 
 	public abstract PixelArray manipulatePixels(PixelArray image);
 	
@@ -19,9 +32,12 @@ public abstract class ImageManipulation {
 		return manipulatePixels(image);
 	}
 	
-	protected void notifyPropertyChange(PropertyChangeEvent ev) {
-		for(PropertyChangeListener listener: listeners){
-			listener.propertyChange(ev);
+	protected void firePropertyChange(PropertyChangeEvent ev) {
+		// only when manipulation is enabled or when its the disable event
+		if(this.isEnabled() || ev.getPropertyName().equals("disabled")){
+			for(PropertyChangeListener listener: listeners){
+				listener.propertyChange(ev);
+			}
 		}
 	}
 	
