@@ -10,6 +10,7 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import util.AdjustCompleteChangeListener;
 import manipulators.pixel.SaturationManipulation;
 
 public class ImageSaturationManipulation extends ImageColorManipulation {
@@ -45,9 +46,9 @@ public class ImageSaturationManipulation extends ImageColorManipulation {
 		satSlider.setPaintTicks(true);
 		panel.add(label, BorderLayout.NORTH);
 		panel.add(satSlider, BorderLayout.CENTER);
-		satSlider.addChangeListener(new ChangeListener() {
+		satSlider.addChangeListener(new AdjustCompleteChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e) {
+			public void changed(ChangeEvent e) {
 				setSaturation(satSlider.getValue() / 128f);
 			}
 		});

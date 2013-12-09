@@ -10,12 +10,14 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import util.AdjustCompleteChangeListener;
 import manipulators.pixel.TransparencyManipulation;
 import model.PixelArray;
 
 public class ImageLayer extends ImageManipulation {
 
 	PixelArray image;
+	PixelArray imageFast;
 	TransparencyManipulation transparency = new TransparencyManipulation();
 	
 	public ImageLayer(PixelArray image) {
@@ -72,8 +74,12 @@ public class ImageLayer extends ImageManipulation {
 			width /= div;
 			height /= div;
 		}
-		
-		return applyTransparency(new PixelArray(this.image, div));
+		if(imageFast != null && imageFast.getWidth() == width && imageFast.getHeight() == height){
+			return applyTransparency(imageFast);
+		} else {
+			imageFast = new PixelArray(this.image, div);
+			return applyTransparency(imageFast);
+		}
 	}
 
 	@Override
@@ -81,9 +87,9 @@ public class ImageLayer extends ImageManipulation {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.setName("Imagelayer transparency");
 		final JSlider transparency = new JSlider(-256, 256, 0);
-		transparency.addChangeListener(new ChangeListener() {
+		transparency.addChangeListener(new AdjustCompleteChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e) {
+			public void changed(ChangeEvent e) {
 				setTransparency(transparency.getValue());
 			}
 		});

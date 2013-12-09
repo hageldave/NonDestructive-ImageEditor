@@ -10,6 +10,7 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import util.AdjustCompleteChangeListener;
 import manipulators.pixel.ContrastManipulation;
 
 public class ImageContrastManipulation extends ImageColorManipulation {
@@ -55,15 +56,15 @@ public class ImageContrastManipulation extends ImageColorManipulation {
 		panel.add(label, BorderLayout.NORTH);
 		panel.add(thresholdslider, BorderLayout.SOUTH);
 		panel.add(intensityslider, BorderLayout.CENTER);
-		intensityslider.addChangeListener(new ChangeListener() {
+		intensityslider.addChangeListener(new AdjustCompleteChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e) {
+			public void changed(ChangeEvent e) {
 				setIntensity(intensityslider.getValue()/128f);
 			}
 		});
-		thresholdslider.addChangeListener(new ChangeListener() {
+		thresholdslider.addChangeListener(new AdjustCompleteChangeListener() {
 			@Override
-			public void stateChanged(ChangeEvent e) {
+			public void changed(ChangeEvent e) {
 				setThreshold(thresholdslider.getValue());
 			}
 		});

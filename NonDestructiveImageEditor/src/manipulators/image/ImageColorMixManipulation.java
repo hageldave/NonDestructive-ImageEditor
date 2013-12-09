@@ -10,6 +10,7 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import util.AdjustCompleteChangeListener;
 import manipulators.pixel.ColorMixManipulation;
 
 public class ImageColorMixManipulation extends ImageColorManipulation {
@@ -63,21 +64,24 @@ public class ImageColorMixManipulation extends ImageColorManipulation {
 		red.setBackground(Color.red);
 		green.setBackground(Color.green);
 		blue.setBackground(Color.blue);
-		red.addChangeListener(new ChangeListener() {
+		red.addChangeListener(new AdjustCompleteChangeListener() {
+			
 			@Override
-			public void stateChanged(ChangeEvent e) {
+			public void changed(ChangeEvent ev) {
 				setRplus(red.getValue());
 			}
 		});
-		green.addChangeListener(new ChangeListener() {
+		green.addChangeListener(new AdjustCompleteChangeListener() {
+			
 			@Override
-			public void stateChanged(ChangeEvent e) {
+			public void changed(ChangeEvent ev) {
 				setGplus(green.getValue());
 			}
 		});
-		blue.addChangeListener(new ChangeListener() {
+		blue.addChangeListener(new AdjustCompleteChangeListener() {
+			
 			@Override
-			public void stateChanged(ChangeEvent e) {
+			public void changed(ChangeEvent ev) {
 				setBplus(blue.getValue());
 			}
 		});
