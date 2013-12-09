@@ -5,8 +5,6 @@ import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingWorker;
 
-import model.ImageRenderer;
-
 public class RenderJob extends SwingWorker<BufferedImage, Void>{
 	
 	ImageRenderer renderer;
@@ -21,8 +19,14 @@ public class RenderJob extends SwingWorker<BufferedImage, Void>{
 	}
 	
 
+	public boolean isPreview() {
+		return isPreview;
+	}
+
+
 	@Override
 	protected BufferedImage doInBackground() throws Exception {
+		Thread.yield();
 		return isPreview? renderer.renderPreview():renderer.renderFull();
 	}
 	
@@ -39,6 +43,11 @@ public class RenderJob extends SwingWorker<BufferedImage, Void>{
 				afterAction.doPostAction(null, false);
 			}
 		}
+	}
+	
+	
+	public String getPostRenderActionID(){
+		return this.afterAction.getId();
 	}
 
 }
