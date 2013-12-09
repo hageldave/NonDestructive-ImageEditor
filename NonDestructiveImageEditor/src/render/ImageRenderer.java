@@ -1,4 +1,4 @@
-package model;
+package render;
 
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
@@ -10,12 +10,17 @@ import java.util.Observer;
 import util.ObservableArrayList;
 import manipulators.image.ImageLayer;
 import manipulators.image.ImageManipulation;
+import model.PixelArray;
 
 public class ImageRenderer extends Observable implements Observer, PropertyChangeListener {
 
 	private ObservableArrayList<ImageManipulation> manipulationlist = new ObservableArrayList<>();
 
 	private int maxNumPreviewPx = 100000; // aprox 316x316px
+	
+	private RenderJob currentJob;
+	
+	private LinkedList<RenderJob> renderJobQueue = new LinkedList<>();
 	
 	public ImageRenderer() {
 		manipulationlist.addObserver(this);
@@ -55,6 +60,7 @@ public class ImageRenderer extends Observable implements Observer, PropertyChang
 		}
 	}
 	
+	
 	public boolean liftElement(int elementIndex, int levels){
 		return manipulationlist.setElementToIndex(elementIndex, elementIndex-levels);
 	}
@@ -80,6 +86,25 @@ public class ImageRenderer extends Observable implements Observer, PropertyChang
 	public ImageManipulation getManipulation(int index) {
 		return manipulationlist.get(index);
 	}
+	
+	
+	// ------------------------------------------------------
+	
+	
+	public void executeRendering(boolean isPreview, PostRenderAction afterwards){
+		RenderJob job = new RenderJob(this, isPreview, afterwards);
+		job.execute();
+		if(currentJob != null && !currentJob.isDone()){
+			if(currentJob.getPostRenderActionID().equals(afterwards.getId())){
+				long time = System.currentTimeMillis();
+				System.out.println("cancelling result: " + currentJob.cancel(true));
+				System.out.println(System.currentTimeMillis() - time);
+			}
+		}
+		currentJob = job;
+		Thread.yield();
+	}
+	
 	
 	public BufferedImage renderPreview(){
 		LinkedList<PixelArray> renderedLayers = getRenderedLayers(getLayerTasks(), true);
@@ -151,20 +176,6 @@ public class ImageRenderer extends Observable implements Observer, PropertyChang
 			}
 			return pa;
 		}
-	}
-	
-	public PixelArray renderPixels(PixelArray pixels){
-		for(ImageManipulation im: manipulationlist){
-			pixels = im.manipulatePixels(pixels);
-		}
-		return pixels;
-	}
-	
-	public PixelArray renderPixelsForPreview(PixelArray pixels){
-		for(ImageManipulation im: manipulationlist){
-			pixels = im.manipulatePixelsFast(pixels);
-		}
-		return pixels;
 	}
 	
 }

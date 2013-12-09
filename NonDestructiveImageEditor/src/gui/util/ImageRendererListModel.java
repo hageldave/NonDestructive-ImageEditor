@@ -9,8 +9,8 @@ import javax.swing.ListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 
+import render.ImageRenderer;
 import manipulators.image.ImageManipulation;
-import model.ImageRenderer;
 
 public class ImageRendererListModel implements ListModel<ImageManipulation>, Observer {
 	

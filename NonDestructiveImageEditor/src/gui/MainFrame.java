@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.image.BufferedImage;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -11,6 +12,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSplitPane;
 
+import render.PostRenderAction;
 import IO.OpenImageAction;
 import IO.SaveImageAction;
 import model.DataOverview;
@@ -40,12 +42,20 @@ public class MainFrame extends JFrame {
 		splitpane.setDividerLocation(800);
 		contentpane.add(splitpane);
 		// TODO: better listener creation and location of creation
+		final PostRenderAction ipanelUpdate = new PostRenderAction("ipanel") {
+			@Override
+			public void doPostAction(BufferedImage result, boolean wasCancelled) {
+				if(!wasCancelled){
+					iPanel.setImage(result);
+					iPanel.repaint();
+				}
+			}
+		};
 		DataOverview.renderer.addObserver(new Observer() {
 			
 			@Override
 			public void update(Observable arg0, Object arg1) {
-				iPanel.setImage(DataOverview.renderer.renderPreview());
-				iPanel.repaint();
+				DataOverview.renderer.executeRendering(true, ipanelUpdate);
 			}
 		});
 	}
