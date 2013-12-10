@@ -71,4 +71,9 @@ public class ImageContrastManipulation extends ImageColorManipulation {
 		return panel;
 	}
 
+	@Override
+	public String getManipulationName() {
+		return "Contrast";
+	}
+
 }

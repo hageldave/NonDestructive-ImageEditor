@@ -50,6 +50,15 @@ public class ImageRendererListModel implements ListModel<ImageManipulation>, Obs
 	public boolean liftElement(int elementIndex, int levels) {
 		return renderer.liftElement(elementIndex, levels);
 	}
+	
+
+	public boolean addElement(ImageManipulation e) {
+		return renderer.addManipulation(e);
+	}
+
+	public void addElementAt(int index, ImageManipulation element) {
+		renderer.addManipulation(index, element);
+	}
 
 	@Override
 	public void update(Observable o, Object arg) {

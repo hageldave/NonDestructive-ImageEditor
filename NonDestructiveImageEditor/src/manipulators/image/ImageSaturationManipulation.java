@@ -55,4 +55,9 @@ public class ImageSaturationManipulation extends ImageColorManipulation {
 		return panel;
 	}
 
+	
+	@Override
+	public String getManipulationName() {
+		return "Saturation";
+	}
 }

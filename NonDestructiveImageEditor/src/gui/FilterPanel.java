@@ -7,15 +7,21 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -23,7 +29,11 @@ import javax.swing.JToolBar;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 
+import manipulators.image.ImageColorMixManipulation;
+import manipulators.image.ImageContrastManipulation;
 import manipulators.image.ImageManipulation;
+import manipulators.image.ImageNormalMapGenerator;
+import manipulators.image.ImageSaturationManipulation;
 import model.DataOverview;
 
 @SuppressWarnings("serial")
@@ -43,7 +53,7 @@ public class FilterPanel extends JPanel{
 					JList<? extends ImageManipulation> list,
 					ImageManipulation value, int index, boolean isSelected,
 					boolean cellHasFocus) {
-					JLabel label = new JLabel(value.getGUIEditor().getName());
+					JLabel label = new JLabel(value.getManipulationName());
 					if(isSelected){
 						if(cellHasFocus){
 							label.setBorder(BorderFactory.createLineBorder(selectedColor, 2, false));
@@ -115,12 +125,62 @@ public class FilterPanel extends JPanel{
 				}
 			}
 		};
-		JToolBar toolbar = new JToolBar();
+		final JToolBar toolbar = new JToolBar();
 		toolbar.setFloatable(false);
 		toolbar.add(effectUp);
 		toolbar.add(effectDown);
 		toolbar.add(effectDump);
+		
+		Action[] addEffectactions = new Action[]{
+				new AddEffectAction(filterlist, listmodel, ImageColorMixManipulation.class, "add Color Mixer"),
+				new AddEffectAction(filterlist, listmodel, ImageContrastManipulation.class, "add Contrast"),
+				new AddEffectAction(filterlist, listmodel, ImageSaturationManipulation.class, "add Saturation"),
+				new AddEffectAction(filterlist, listmodel, ImageNormalMapGenerator.class, "add Normalmap Maker")};
+		
+		final JPopupMenu addeffectsmenu = new JPopupMenu();
+		for(Action action: addEffectactions){
+			addeffectsmenu.add(action);
+		}
+		Action showpopupaction = new AbstractAction("Add Effect") {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				addeffectsmenu.show(toolbar, 0, 0);
+			}
+		};
+		
+		toolbar.add(showpopupaction);
 		this.add(toolbar, "topleft(0,-40)bottomright(1.0,1.0)");
+	}
+	
+	
+	private static class AddEffectAction extends AbstractAction {
+		JList<ImageManipulation> myFilterlist;
+		ImageRendererListModel listmodel;
+		Class<? extends ImageManipulation> clazz;
+		
+		public AddEffectAction(JList<ImageManipulation> list, ImageRendererListModel model, Class<? extends ImageManipulation> clazz, String actionname) {
+			super(actionname);
+			this.myFilterlist = list;
+			this.listmodel = model;
+			this.clazz = clazz;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			int selectindex = myFilterlist.getSelectedIndex();
+			try {
+				if(selectindex != -1){
+					listmodel.addElementAt(selectindex+1, clazz.newInstance());
+				} else {
+					listmodel.addElement(clazz.newInstance());
+				}
+			} catch (InstantiationException | IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}
 	
 }

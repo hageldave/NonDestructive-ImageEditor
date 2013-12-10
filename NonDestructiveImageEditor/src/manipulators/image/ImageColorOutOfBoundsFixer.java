@@ -31,4 +31,9 @@ public class ImageColorOutOfBoundsFixer extends ImageColorManipulation {
 		return panel;
 	}
 
+	@Override
+	public String getManipulationName() {
+		return "Color Out Of Bounds Fix";
+	}
+
 }

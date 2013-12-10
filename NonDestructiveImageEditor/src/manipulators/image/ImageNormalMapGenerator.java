@@ -139,5 +139,8 @@ public class ImageNormalMapGenerator extends ImageManipulation {
 		return panel;
 	}
 
-	
+	@Override
+	public String getManipulationName() {
+		return "To NormalMap";
+	}
 }

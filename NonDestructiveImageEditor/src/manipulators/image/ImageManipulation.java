@@ -28,6 +28,8 @@ public abstract class ImageManipulation {
 
 	public abstract PixelArray manipulatePixels(PixelArray image);
 	
+	public abstract String getManipulationName();
+	
 	public PixelArray manipulatePixelsFast(PixelArray image){
 		return manipulatePixels(image);
 	}

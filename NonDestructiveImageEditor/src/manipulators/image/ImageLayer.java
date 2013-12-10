@@ -98,4 +98,9 @@ public class ImageLayer extends ImageManipulation {
 		return panel;
 	}
 
+	@Override
+	public String getManipulationName() {
+		return "ImageLayer";
+	}
+
 }

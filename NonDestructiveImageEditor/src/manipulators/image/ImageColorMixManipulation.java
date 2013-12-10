@@ -91,4 +91,9 @@ public class ImageColorMixManipulation extends ImageColorManipulation {
 		return panel;
 	}
 
+	@Override
+	public String getManipulationName() {
+		return "Color Mixer";
+	}
+
 }
