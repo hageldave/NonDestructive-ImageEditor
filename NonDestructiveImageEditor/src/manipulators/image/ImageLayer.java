@@ -53,16 +53,19 @@ public class ImageLayer extends ImageManipulation {
 		return image;
 	}
 	
+	/** !! notice that this method generates a new pixelarray to not modify the original */
 	protected PixelArray applyTransparency(PixelArray pixArr){
+		PixelArray transparencyapplied = new PixelArray(pixArr.getWidth(), pixArr.getHeight());
 		for(int i = 0; i < pixArr.getNumOfPixels(); i++){
-			pixArr.setRGBAatIndex(i, transparency.manipulatePixel(pixArr.getRGBAatIndex(i)));
+			int[] rgbaOrig = pixArr.getRGBAatIndex(i);
+			transparencyapplied.setRGBAatIndex(i, transparency.manipulatePixel(new int[]{rgbaOrig[0],rgbaOrig[1],rgbaOrig[2],rgbaOrig[3]}));
 		}
-		return pixArr;
+		return transparencyapplied;
 	}
 	
 	
 	public PixelArray getLayer(){
-		return applyTransparency(new PixelArray(this.image));
+		return applyTransparency(this.image);
 	}
 	
 	public PixelArray getLayerFast(int maxPixels){
@@ -70,9 +73,9 @@ public class ImageLayer extends ImageManipulation {
 		int height = image.getHeight();
 		int div = 1;
 		while(width*height > maxPixels && width > 2 && height > 2){
-			div *= 2;
-			width /= div;
-			height /= div;
+			div    = div    << 1;
+			width  = width  >> 1;
+			height = height >> 1;
 		}
 		if(imageFast != null && imageFast.getWidth() == width && imageFast.getHeight() == height){
 			return applyTransparency(imageFast);
@@ -86,7 +89,7 @@ public class ImageLayer extends ImageManipulation {
 	protected JComponent makeGUIEditor() {
 		JPanel panel = new JPanel(new BorderLayout());
 		panel.setName("Imagelayer transparency");
-		final JSlider transparency = new JSlider(-256, 256, 0);
+		final JSlider transparency = new JSlider(-255, 0, 0);
 		transparency.addChangeListener(new AdjustCompleteChangeListener() {
 			@Override
 			public void changed(ChangeEvent e) {
