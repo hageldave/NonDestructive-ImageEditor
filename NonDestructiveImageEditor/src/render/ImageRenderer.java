@@ -4,12 +4,14 @@ import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
 import util.ObservableArrayList;
 import manipulators.image.ImageLayer;
 import manipulators.image.ImageManipulation;
+import manipulators.image.ImageMerger;
 import model.PixelArray;
 
 public class ImageRenderer extends Observable implements Observer, PropertyChangeListener {
@@ -111,9 +113,8 @@ public class ImageRenderer extends Observable implements Observer, PropertyChang
 		if(renderedLayers.isEmpty()){
 			return null;
 		}
-		// TODO:merge layers
 		try {
-			return renderedLayers.getFirst().generateBufferedImage();// placeholder
+			return mergeRenderedLayers(renderedLayers).generateBufferedImage();
 		} finally {
 			System.gc();
 		}
@@ -125,11 +126,26 @@ public class ImageRenderer extends Observable implements Observer, PropertyChang
 		if(renderedLayers.isEmpty()){
 			return null;
 		}
-		// TODO:merge layers
 		try {
-			return renderedLayers.getFirst().generateBufferedImage();// placeholder
+			return mergeRenderedLayers(renderedLayers).generateBufferedImage();
 		} finally {
 			System.gc();
+		}
+	}
+	
+	
+	private PixelArray mergeRenderedLayers(LinkedList<PixelArray> layers){
+		ImageMerger merger = ImageMerger.getInstance();
+		if(layers.size() < 1){
+			return null;
+		} else if(layers.size() == 1){
+			return layers.getFirst();
+		} else {
+			PixelArray bottom = layers.pollFirst();
+			while(!layers.isEmpty()){
+				bottom = merger.merge(bottom, layers.pollFirst());
+			}
+			return bottom;
 		}
 	}
 	
