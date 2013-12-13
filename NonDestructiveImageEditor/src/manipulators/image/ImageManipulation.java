@@ -1,10 +1,18 @@
 package manipulators.image;
 
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.LinkedList;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import model.PixelArray;
 
@@ -54,10 +62,28 @@ public abstract class ImageManipulation {
 	public boolean removePropertyChangeListener(Object listener) {
 		return listeners.remove(listener);
 	}
+	
+	
+	private JPanel buildCompoundGuiEditor(JComponent guieditor){
+		final JCheckBox enabler = new JCheckBox("on/off");
+		enabler.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				if(isEnabled() != enabler.isSelected()){
+					ImageManipulation.this.setEnabled(enabler.isSelected());
+				}
+			}
+		});
+		enabler.setSelected(isEnabled());
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.add(enabler, BorderLayout.WEST);
+		panel.add(guieditor, BorderLayout.EAST);
+		return panel;
+	}
 
 	public JComponent getGUIEditor() {
 		if(this.guiEditor == null){
-			this.guiEditor = makeGUIEditor();
+			this.guiEditor = buildCompoundGuiEditor(makeGUIEditor());
 		}
 		return guiEditor;
 	}

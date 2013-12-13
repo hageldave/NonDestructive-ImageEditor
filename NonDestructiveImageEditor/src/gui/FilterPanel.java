@@ -58,8 +58,13 @@ public class FilterPanel extends JPanel{
 						if(cellHasFocus){
 							label.setBorder(BorderFactory.createLineBorder(selectedColor, 2, false));
 						} else {
-							label.setBorder(BorderFactory.createLineBorder(Color.darkGray, 1, false));
+							label.setBorder(BorderFactory.createDashedBorder(selectedColor));
 						}
+					}
+					if(!value.isEnabled()){
+						label.setOpaque(true);
+						label.setBackground(Color.darkGray);
+						label.setForeground(Color.lightGray);
 					}
 				return label;
 			}
