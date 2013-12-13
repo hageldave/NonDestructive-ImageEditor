@@ -1,6 +1,8 @@
 package manipulators.image;
 
+import model.IPixelCollection;
 import model.PixelArray;
+import model.ResolutionWrapper;
 
 public class ImageMerger {
 	
@@ -13,9 +15,10 @@ public class ImageMerger {
 		return singleton;
 	}
 	
-	public PixelArray merge(PixelArray bottomLayer, PixelArray topLayer){
+	public PixelArray merge(PixelArray bottomLayer, PixelArray topLayerr){
 		// TODO: handle different layersizes
 		PixelArray merged = bottomLayer;
+		ResolutionWrapper topLayer = new ResolutionWrapper(topLayerr, bottomLayer.getWidth(), bottomLayer.getHeight());
 		for(int x = 0; x < merged.getWidth(); x++){
 			for(int y = 0; y < merged.getHeight(); y++){
 				
@@ -35,19 +38,19 @@ public class ImageMerger {
 					int botGA = (botrgba[1]*botalpha)/255;
 					int botBA = (botrgba[2]*botalpha)/255;
 					
-					if(false){
-//					mergedrgba[0] = ((toprgba[0]*topalpha)/255) + ((bottomrgba[0]*bottomalpha)*alpharemainder)/(255*255);
-//					mergedrgba[1] = ((toprgba[1]*topalpha)/255) + ((bottomrgba[1]*bottomalpha)*alpharemainder)/(255*255);
-//					mergedrgba[2] = ((toprgba[2]*topalpha)/255) + ((bottomrgba[2]*bottomalpha)*alpharemainder)/(255*255);
-					mergrgba[0] = topRA + (botRA*alpharemainder)/255;
-					mergrgba[1] = topGA + (botGA*alpharemainder)/255;
-					mergrgba[2] = topBA + (botBA*alpharemainder)/255;
+					if(true){
+					mergrgba[0] = ((toprgba[0]*topalpha)/255) + ((botrgba[0]*botalpha)*alpharemainder)/(255*255);
+					mergrgba[1] = ((toprgba[1]*topalpha)/255) + ((botrgba[1]*botalpha)*alpharemainder)/(255*255);
+					mergrgba[2] = ((toprgba[2]*topalpha)/255) + ((botrgba[2]*botalpha)*alpharemainder)/(255*255);
+//					mergrgba[0] = topRA + (botRA*alpharemainder)/255;
+//					mergrgba[1] = topGA + (botGA*alpharemainder)/255;
+//					mergrgba[2] = topBA + (botBA*alpharemainder)/255;
 					mergrgba[3] = botalpha + topalpha;
 					} else {
 						// 1st part for opacity	--		-- blend function part --		-- 2nd part for opacity
-						mergrgba[0] = botrgba[0] + ((	((toprgba[0] + botrgba[0])>>1)	*topalpha)/255);
-						mergrgba[1] = botrgba[1] + ((	((toprgba[1] + botrgba[1])>>1)	*topalpha)/255);
-						mergrgba[2] = botrgba[2] + ((	((toprgba[2] + botrgba[2])>>1)	*topalpha)/255);
+						mergrgba[0] = botrgba[0] + ((	((toprgba[0] * botrgba[0])>>8)	*topalpha)/255);
+						mergrgba[1] = botrgba[1] + ((	((toprgba[1] * botrgba[1])>>8)	*topalpha)/255);
+						mergrgba[2] = botrgba[2] + ((	((toprgba[2] * botrgba[2])>>8)	*topalpha)/255);
 						mergrgba[3] = botalpha;
 					}
 					merged.setRGBA(x, y, mergrgba);

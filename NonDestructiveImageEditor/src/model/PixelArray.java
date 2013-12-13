@@ -2,36 +2,64 @@ package model;
 
 import java.awt.image.BufferedImage;
 
-public class PixelArray {
+public class PixelArray implements IPixelCollection {
 	private int[][] rgbaPixels = new int[0][4];
 	private int imageWidth = 0;
 	private int divider = 1;
 	
+	/* (non-Javadoc)
+	 * @see model.IPixelCollection#getRGBA(int, int)
+	 */
+	@Override
 	public int[] getRGBA(int x, int y){
 		return rgbaPixels[y*imageWidth + x];
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see model.IPixelCollection#getRGBAatIndex(int)
+	 */
+	@Override
 	public int[] getRGBAatIndex(int index){
 		return rgbaPixels[index];
 	}
 	
+	/* (non-Javadoc)
+	 * @see model.IPixelCollection#setRGBA(int, int, int[])
+	 */
+	@Override
 	public void setRGBA(int x, int y, int[] rgba){
 		rgbaPixels[y*imageWidth + x] = rgba;
 	}
 	
+	/* (non-Javadoc)
+	 * @see model.IPixelCollection#setRGBAatIndex(int, int[])
+	 */
+	@Override
 	public void setRGBAatIndex(int index, int[] rgba){
 		rgbaPixels[index] = rgba;
 	}
 	
+	/* (non-Javadoc)
+	 * @see model.IPixelCollection#getHeight()
+	 */
+	@Override
 	public int getHeight() {
 		return rgbaPixels.length/imageWidth;
 	}
 	
+	/* (non-Javadoc)
+	 * @see model.IPixelCollection#getWidth()
+	 */
+	@Override
 	public int getWidth() {
 		return imageWidth;
 	}
 	
+	/* (non-Javadoc)
+	 * @see model.IPixelCollection#getNumOfPixels()
+	 */
+	@Override
 	public int getNumOfPixels(){
 		return rgbaPixels.length;
 	}
@@ -67,7 +95,7 @@ public class PixelArray {
 		}
 	}
 	
-	public PixelArray(PixelArray pixArr, int divider) {
+	public PixelArray(IPixelCollection pixArr, int divider) {
 		this.divider = divider;
 		imageWidth = pixArr.getWidth()/divider;
 		rgbaPixels = new int[(pixArr.getWidth()/divider)*(pixArr.getHeight()/divider)][4];
@@ -100,6 +128,10 @@ public class PixelArray {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see model.IPixelCollection#generateBufferedImage()
+	 */
+	@Override
 	public BufferedImage generateBufferedImage(){
 		int[] rgbaCompoundArray = new int[this.getNumOfPixels()];
 		for(int i = 0; i < getNumOfPixels(); i++){
