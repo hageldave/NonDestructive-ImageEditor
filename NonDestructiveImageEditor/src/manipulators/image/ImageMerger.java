@@ -1,6 +1,5 @@
 package manipulators.image;
 
-import model.IPixelCollection;
 import model.PixelArray;
 import model.ResolutionWrapper;
 
@@ -29,14 +28,14 @@ public class ImageMerger {
 					int botalpha = botrgba[3];
 					int topalpha = toprgba[3];
 					int alpharemainder = 255 - topalpha;
-					
-					int topRA = (toprgba[0]*topalpha)/255;
-					int topGA = (toprgba[1]*topalpha)/255;
-					int topBA = (toprgba[2]*topalpha)/255;
-					
-					int botRA = (botrgba[0]*botalpha)/255;
-					int botGA = (botrgba[1]*botalpha)/255;
-					int botBA = (botrgba[2]*botalpha)/255;
+//					
+//					int topRA = (toprgba[0]*topalpha)/255;
+//					int topGA = (toprgba[1]*topalpha)/255;
+//					int topBA = (toprgba[2]*topalpha)/255;
+//					
+//					int botRA = (botrgba[0]*botalpha)/255;
+//					int botGA = (botrgba[1]*botalpha)/255;
+//					int botBA = (botrgba[2]*botalpha)/255;
 					
 					if(true){
 					mergrgba[0] = ((toprgba[0]*topalpha)/255) + ((botrgba[0]*botalpha)*alpharemainder)/(255*255);
@@ -47,6 +46,7 @@ public class ImageMerger {
 //					mergrgba[2] = topBA + (botBA*alpharemainder)/255;
 					mergrgba[3] = botalpha + topalpha;
 					} else {
+						// TODO: choose what blending function to use
 						// 1st part for opacity	--		-- blend function part --		-- 2nd part for opacity
 						mergrgba[0] = botrgba[0] + ((	((toprgba[0] * botrgba[0])>>8)	*topalpha)/255);
 						mergrgba[1] = botrgba[1] + ((	((toprgba[1] * botrgba[1])>>8)	*topalpha)/255);

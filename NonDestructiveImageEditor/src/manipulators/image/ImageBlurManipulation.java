@@ -1,6 +1,7 @@
 package manipulators.image;
 
 import java.beans.PropertyChangeEvent;
+import java.util.LinkedList;
 
 import javax.swing.JComponent;
 import javax.swing.JSlider;
@@ -25,13 +26,17 @@ public class ImageBlurManipulation extends ImageManipulation {
 
 	@Override
 	public PixelArray manipulatePixels(PixelArray image) {
-		PixelArray imgClone = new PixelArray(image); // TODO: solution without clone
 		
 		int redTotal = 0;
 		int grnTotal = 0;
 		int bluTotal = 0;
 		int alpTotal = 0;
-		
+		/* contains all color colors that are currently used in totals.
+		 * When pixel comes out of range of radius the first 4 color values
+		 * are popped and subtracted from the respective total.
+		 */
+		LinkedList<Integer> colorList = new LinkedList<>();
+ 		
 		int radius =(int) (image.getWidth()*relativeRadius)/2;
 		// horizontal blur
 		for(int y = 0; y < image.getHeight(); y++){
@@ -40,45 +45,45 @@ public class ImageBlurManipulation extends ImageManipulation {
 			grnTotal = 0;
 			alpTotal = 0;
 			int numOfPxInAverage = 0;
+			colorList.clear();
 			for(int i = 0; i < radius; i++){
-				// setup lists
+				// setup totals for first pixel in row
 				if(i < image.getWidth()){
-					int[] rgba = imgClone.getRGBA(i, y);
-					redTotal += rgba[0];
-					grnTotal += rgba[1];
-					bluTotal += rgba[2];
-					alpTotal += rgba[3];
+					int[] rgba = image.getRGBA(i, y);
+					redTotal += rgba[0]; colorList.add(rgba[0]);
+					grnTotal += rgba[1]; colorList.add(rgba[1]);
+					bluTotal += rgba[2]; colorList.add(rgba[2]);
+					alpTotal += rgba[3]; colorList.add(rgba[3]);
 					numOfPxInAverage++;
 				}
 			}
 			for(int x = 0; x < image.getWidth(); x++){
 				if(x > radius){
 					// remove firsts from lists cause they're not in range of radius anymore
-					int[] rgba = imgClone.getRGBA(x-radius-1, y);
-					redTotal -= rgba[0];
-					grnTotal -= rgba[1];
-					bluTotal -= rgba[2];
-					alpTotal -= rgba[3];
+					redTotal -= colorList.pollFirst();
+					grnTotal -= colorList.pollFirst();
+					bluTotal -= colorList.pollFirst();
+					alpTotal -= colorList.pollFirst();
 					numOfPxInAverage--;
 				}
 				if(x+radius < image.getWidth()){
 					// add pixel that just got in range
-					int[] rgba = imgClone.getRGBA(x+radius, y);
-					redTotal += rgba[0];
-					grnTotal += rgba[1];
-					bluTotal += rgba[2];
-					alpTotal += rgba[3];
+					int[] rgba = image.getRGBA(x+radius, y);
+					redTotal += rgba[0]; colorList.add(rgba[0]);
+					grnTotal += rgba[1]; colorList.add(rgba[1]);
+					bluTotal += rgba[2]; colorList.add(rgba[2]);
+					alpTotal += rgba[3]; colorList.add(rgba[3]);
 					numOfPxInAverage++;
 				}
 				
 				int[] rgba = image.getRGBA(x, y);
-				rgba[0]=redTotal/numOfPxInAverage;
-				rgba[1]=grnTotal/numOfPxInAverage;
-				rgba[2]=bluTotal/numOfPxInAverage;
-				rgba[3]=alpTotal/numOfPxInAverage;
+				rgba[0]=((rgba[0])+redTotal)/(numOfPxInAverage+1); // weight on center pixel
+				rgba[1]=((rgba[1])+grnTotal)/(numOfPxInAverage+1);
+				rgba[2]=((rgba[2])+bluTotal)/(numOfPxInAverage+1);
+				rgba[3]=((rgba[3])+alpTotal)/(numOfPxInAverage+1);
 			}
 		}
-		imgClone = new PixelArray(image);
+
 		// vertical blur
 		for (int x = 0; x < image.getWidth(); x++) {
 			redTotal = 0;
@@ -86,14 +91,15 @@ public class ImageBlurManipulation extends ImageManipulation {
 			grnTotal = 0;
 			alpTotal = 0;
 			int numOfPxInAverage = 0;
+			colorList.clear();
 			for (int i = 0; i < radius; i++) {
 				// setup lists
 				if (i < image.getHeight()) {
-					int[] rgba = imgClone.getRGBA(x, i);
-					redTotal += rgba[0];
-					grnTotal += rgba[1];
-					bluTotal += rgba[2];
-					alpTotal += rgba[3];
+					int[] rgba = image.getRGBA(x, i);
+					redTotal += rgba[0]; colorList.add(rgba[0]);
+					grnTotal += rgba[1]; colorList.add(rgba[1]);
+					bluTotal += rgba[2]; colorList.add(rgba[2]);
+					alpTotal += rgba[3]; colorList.add(rgba[3]);
 					numOfPxInAverage++;
 				}
 			}
@@ -101,28 +107,27 @@ public class ImageBlurManipulation extends ImageManipulation {
 				if (y > radius) {
 					// remove firsts from lists cause they're not in range of
 					// radius anymore
-					int[] rgba = imgClone.getRGBA(x, y-radius-1);
-					redTotal -= rgba[0];
-					grnTotal -= rgba[1];
-					bluTotal -= rgba[2];
-					alpTotal -= rgba[3];
+					redTotal -= colorList.pollFirst();
+					grnTotal -= colorList.pollFirst();
+					bluTotal -= colorList.pollFirst();
+					alpTotal -= colorList.pollFirst();
 					numOfPxInAverage--;
 				}
 				if (y + radius < image.getHeight()) {
 					// add pixel that just got in range
-					int[] rgba = imgClone.getRGBA(x, y+radius);
-					redTotal += rgba[0];
-					grnTotal += rgba[1];
-					bluTotal += rgba[2];
-					alpTotal += rgba[3];
+					int[] rgba = image.getRGBA(x, y+radius);
+					redTotal += rgba[0]; colorList.add(rgba[0]);
+					grnTotal += rgba[1]; colorList.add(rgba[1]);
+					bluTotal += rgba[2]; colorList.add(rgba[2]);
+					alpTotal += rgba[3]; colorList.add(rgba[3]);
 					numOfPxInAverage++;
 				}
 
 				int[] rgba = image.getRGBA(x, y);
-				rgba[0]=redTotal/numOfPxInAverage;
-				rgba[1]=grnTotal/numOfPxInAverage;
-				rgba[2]=bluTotal/numOfPxInAverage;
-				rgba[3]=alpTotal/numOfPxInAverage;
+				rgba[0]=((rgba[0])+redTotal)/(numOfPxInAverage+1); // weight on center pixel
+				rgba[1]=((rgba[1])+grnTotal)/(numOfPxInAverage+1);
+				rgba[2]=((rgba[2])+bluTotal)/(numOfPxInAverage+1);
+				rgba[3]=((rgba[3])+alpTotal)/(numOfPxInAverage+1);
 			}
 		}
 		
