@@ -29,6 +29,7 @@ import javax.swing.JToolBar;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 
+import manipulators.image.ImageBlurManipulation;
 import manipulators.image.ImageColorMixManipulation;
 import manipulators.image.ImageContrastManipulation;
 import manipulators.image.ImageManipulation;
@@ -140,7 +141,8 @@ public class FilterPanel extends JPanel{
 				new AddEffectAction(filterlist, listmodel, ImageColorMixManipulation.class, "add Color Mixer"),
 				new AddEffectAction(filterlist, listmodel, ImageContrastManipulation.class, "add Contrast"),
 				new AddEffectAction(filterlist, listmodel, ImageSaturationManipulation.class, "add Saturation"),
-				new AddEffectAction(filterlist, listmodel, ImageNormalMapGenerator.class, "add Normalmap Maker")};
+				new AddEffectAction(filterlist, listmodel, ImageNormalMapGenerator.class, "add Normalmap Maker"),
+				new AddEffectAction(filterlist, listmodel, ImageBlurManipulation.class, "add Blur")};
 		
 		final JPopupMenu addeffectsmenu = new JPopupMenu();
 		for(Action action: addEffectactions){
@@ -175,7 +177,7 @@ public class FilterPanel extends JPanel{
 		public void actionPerformed(ActionEvent arg0) {
 			int selectindex = myFilterlist.getSelectedIndex();
 			try {
-				if(selectindex != -1){
+				if(selectindex != -1 && myFilterlist.getModel().getSize() != 0){
 					listmodel.addElementAt(selectindex+1, clazz.newInstance());
 				} else {
 					listmodel.addElement(clazz.newInstance());
