@@ -42,7 +42,8 @@ public class ImageSaturationManipulation extends ImageColorManipulation {
 		panel.setName("Saturation");
 		JLabel label = new JLabel("Saturation");
 		final JSlider satSlider = new JSlider(-128, 256, 0);
-		satSlider.setMajorTickSpacing(16);
+		satSlider.setMajorTickSpacing(128);
+		satSlider.setMinorTickSpacing(32);
 		satSlider.setPaintTicks(true);
 		panel.add(label, BorderLayout.NORTH);
 		panel.add(satSlider, BorderLayout.CENTER);

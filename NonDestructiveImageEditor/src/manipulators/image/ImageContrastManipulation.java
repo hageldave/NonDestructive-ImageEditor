@@ -52,7 +52,13 @@ public class ImageContrastManipulation extends ImageColorManipulation {
 		panel.setName("Contrast");
 		JLabel label = new JLabel("Contrast");
 		final JSlider intensityslider = new JSlider(-128, 256, 0);
-		final JSlider thresholdslider = new JSlider(-1, 256, 127);
+		intensityslider.setMajorTickSpacing(128);
+		intensityslider.setMinorTickSpacing(32);
+		intensityslider.setPaintTicks(true);
+		final JSlider thresholdslider = new JSlider(0, 256, 128);
+		thresholdslider.setMajorTickSpacing(128);
+		thresholdslider.setMinorTickSpacing(32);
+		thresholdslider.setPaintTicks(true);
 		panel.add(label, BorderLayout.NORTH);
 		panel.add(thresholdslider, BorderLayout.SOUTH);
 		panel.add(intensityslider, BorderLayout.CENTER);

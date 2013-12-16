@@ -12,7 +12,7 @@ import model.PixelArray;
 
 public class ImageBlurManipulation extends ImageManipulation {
 
-	private float relativeRadius = 0.1f;
+	private float relativeRadius = 0.166f;
 	
 	public float getRelativeRadius() {
 		return relativeRadius;
@@ -81,6 +81,7 @@ public class ImageBlurManipulation extends ImageManipulation {
 				rgba[1]=((rgba[1])+grnTotal)/(numOfPxInAverage+1);
 				rgba[2]=((rgba[2])+bluTotal)/(numOfPxInAverage+1);
 				rgba[3]=((rgba[3])+alpTotal)/(numOfPxInAverage+1);
+				image.setRGBA(x, y, rgba);
 			}
 		}
 
@@ -128,6 +129,7 @@ public class ImageBlurManipulation extends ImageManipulation {
 				rgba[1]=((rgba[1])+grnTotal)/(numOfPxInAverage+1);
 				rgba[2]=((rgba[2])+bluTotal)/(numOfPxInAverage+1);
 				rgba[3]=((rgba[3])+alpTotal)/(numOfPxInAverage+1);
+				image.setRGBA(x, y, rgba);
 			}
 		}
 		
@@ -142,12 +144,20 @@ public class ImageBlurManipulation extends ImageManipulation {
 
 	@Override
 	protected JComponent makeGUIEditor() {
-		final JSlider slider = new JSlider(0, 256, (int)(getRelativeRadius()*256));
+		final JSlider slider = new JSlider(0, 300, 100);
+		slider.setMajorTickSpacing(100);
+		slider.setMinorTickSpacing(20);
+		slider.setPaintTicks(true);
 		slider.addChangeListener(new AdjustCompleteChangeListener() {
 			
 			@Override
 			public void changed(ChangeEvent ev) {
-				setRelativeRadius(slider.getValue()/256f);
+				int val = slider.getValue();
+				if(val < 200){
+					setRelativeRadius(val/(300f*(200f/val)));
+				} else {
+					setRelativeRadius(val/300f);
+				}
 			}
 		});
 		return slider;

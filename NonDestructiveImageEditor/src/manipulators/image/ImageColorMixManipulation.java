@@ -62,9 +62,18 @@ public class ImageColorMixManipulation extends ImageColorManipulation {
 		final JSlider green = new JSlider(-256,256,0);
 		final JSlider blue = new JSlider(-256,256,0);
 		red.setBackground(Color.red);
+		red.setMajorTickSpacing(256);
+		red.setMinorTickSpacing(32);
+		red.setPaintTicks(true);
 		green.setBackground(Color.green);
+		green.setMajorTickSpacing(256);
+		green.setMinorTickSpacing(32);
+		green.setPaintTicks(true);
 		blue.setBackground(Color.blue);
-		red.addChangeListener(new AdjustCompleteChangeListener() {
+		blue.setMajorTickSpacing(256);
+		blue.setMinorTickSpacing(32);
+		blue.setPaintTicks(true);
+		blue.addChangeListener(new AdjustCompleteChangeListener() {
 			
 			@Override
 			public void changed(ChangeEvent ev) {
