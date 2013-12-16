@@ -184,12 +184,14 @@ public class ImageRenderer extends Observable implements Observer, PropertyChang
 			for(ImageManipulation im: manips){
 				pa = im.manipulatePixelsFast(pa);
 			}
+			System.gc();
 			return pa;
 		} else {
 			PixelArray pa = layer.getLayer();
 			for(ImageManipulation im: manips){
 				pa = im.manipulatePixels(pa);
 			}
+			System.gc();
 			return pa;
 		}
 	}
