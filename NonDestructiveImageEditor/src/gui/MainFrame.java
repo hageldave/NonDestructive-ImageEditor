@@ -38,9 +38,10 @@ public class MainFrame extends JFrame {
 		contentpane.setLayout(new BorderLayout());
 		iPanel = new ImagePanel();
 		fPanel = new FilterPanel();
-		JSplitPane splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, iPanel, fPanel);
-		splitpane.setDividerLocation(800);
-		contentpane.add(splitpane);
+//		JSplitPane splitpane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, iPanel, fPanel);
+		contentpane.add(iPanel,BorderLayout.CENTER);
+		contentpane.add(fPanel, BorderLayout.EAST);
+		contentpane.add(StatusBar.getInstance(), BorderLayout.SOUTH);
 		// TODO: better listener creation and location of creation
 		final PostRenderAction ipanelUpdate = new PostRenderAction("ipanel") {
 			@Override

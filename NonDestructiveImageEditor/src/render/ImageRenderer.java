@@ -1,5 +1,7 @@
 package render;
 
+import gui.StatusBar;
+
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -109,26 +111,38 @@ public class ImageRenderer extends Observable implements Observer, PropertyChang
 	
 	
 	public BufferedImage renderPreview(){
+		StatusBar.getInstance().setCurrentStatus("Rendering ");
+		StatusBar.getInstance().setCurrentProgress(0);
+		
 		LinkedList<PixelArray> renderedLayers = getRenderedLayers(getLayerTasks(), true);
 		if(renderedLayers.isEmpty()){
 			return null;
 		}
 		try {
-			return mergeRenderedLayers(renderedLayers).generateBufferedImage();
+			BufferedImage toReturn = mergeRenderedLayers(renderedLayers).generateBufferedImage();
+			return toReturn;
 		} finally {
+			StatusBar.getInstance().setCurrentStatus("");
+			StatusBar.getInstance().setCurrentProgress(0);
 			System.gc();
 		}
 	}
 	
 	
 	public BufferedImage renderFull(){
+		StatusBar.getInstance().setCurrentStatus("Rendering ");
+		StatusBar.getInstance().setCurrentProgress(0);
+		
 		LinkedList<PixelArray> renderedLayers = getRenderedLayers(getLayerTasks(), false);
 		if(renderedLayers.isEmpty()){
 			return null;
 		}
 		try {
-			return mergeRenderedLayers(renderedLayers).generateBufferedImage();
+			BufferedImage toReturn = mergeRenderedLayers(renderedLayers).generateBufferedImage();
+			return toReturn;
 		} finally {
+			StatusBar.getInstance().setCurrentStatus("");
+			StatusBar.getInstance().setCurrentProgress(0);
 			System.gc();
 		}
 	}
@@ -157,32 +171,46 @@ public class ImageRenderer extends Observable implements Observer, PropertyChang
 			if(im instanceof ImageLayer){
 				layertask = new LinkedList<>();
 				tasks.add(layertask);
-				layertask.add(im); // layers are filtered out later in getRenderedLayers
+				layertask.add(im); // disabled layers are filtered out later 
 			} else {
 				if(im.isEnabled()){
 					layertask.add(im);
 				}
 			}
 		}
+		LinkedList<LinkedList<ImageManipulation>> toRemove = new LinkedList<>();
+		for(LinkedList<ImageManipulation> task: tasks){
+			if(!((ImageLayer)task.getFirst()).isEnabled()){
+				toRemove.add(task);
+			}
+		}
+		tasks.removeAll(toRemove);
+		
 		return tasks;
 	}
 	
 	private LinkedList<PixelArray> getRenderedLayers(LinkedList<LinkedList<ImageManipulation>> layertasklist, boolean fast){
 		LinkedList<PixelArray> renderedlayers = new LinkedList<>();
+		int i = 0; int num = layertasklist.size();
 		for(LinkedList<ImageManipulation> layertask: layertasklist){
 			ImageLayer layer = (ImageLayer) layertask.pollFirst();
-			if(layer.isEnabled()){
-				renderedlayers.add(renderLayer(layer, layertask, fast));
-			}
+			
+			i++;
+			StatusBar.getInstance().setCurrentStatus("Rendereing Layer "+i+" of "+num);
+			
+			renderedlayers.add(renderLayer(layer, layertask, fast));
 		}
 		return renderedlayers;
 	}
 	
 	private PixelArray renderLayer(ImageLayer layer, LinkedList<ImageManipulation> manips, boolean fast){
+		int i = 0; float num = manips.size();
 		if(fast){
 			PixelArray pa = layer.getLayerFast(maxNumPreviewPx);
 			for(ImageManipulation im: manips){
 				pa = im.manipulatePixelsFast(pa);
+				i++;
+				StatusBar.getInstance().setCurrentProgress((int)((i/num)*100));
 			}
 			System.gc();
 			return pa;
@@ -190,6 +218,8 @@ public class ImageRenderer extends Observable implements Observer, PropertyChang
 			PixelArray pa = layer.getLayer();
 			for(ImageManipulation im: manips){
 				pa = im.manipulatePixels(pa);
+				i++;
+				StatusBar.getInstance().setCurrentProgress((int)((i/num)*100));
 			}
 			System.gc();
 			return pa;

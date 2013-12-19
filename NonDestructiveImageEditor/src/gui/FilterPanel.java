@@ -6,6 +6,7 @@ import gui.util.PhotoCornersLayout;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -27,6 +28,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 
 import manipulators.image.ImageBlurManipulation;
@@ -73,6 +75,7 @@ public class FilterPanel extends JPanel{
 		});
 		final ImageRendererListModel listmodel = new ImageRendererListModel(DataOverview.renderer);
 		filterlist.setModel(listmodel);
+		filterlist.addMouseListener(new DragListener(filterlist, listmodel));
 		filterlist.addMouseListener(new MouseAdapter() {
 			
 			@Override
@@ -84,7 +87,7 @@ public class FilterPanel extends JPanel{
 			void showPopup(MouseEvent e){
 				 int index = filterlist.locationToIndex(e.getPoint());
 
-		         if (index != -1) {
+		         if (index != -1 && filterlist.getCellBounds(index, index).contains(e.getPoint())) {
 		         JComponent comp = filterlist.getModel().getElementAt(index).getGUIEditor();
 		         JPopupMenu popup = new JPopupMenu();
 		         popup.setLayout(new BorderLayout());
@@ -161,10 +164,18 @@ public class FilterPanel extends JPanel{
 	}
 	
 	
+	@Override
+	public Dimension getPreferredSize() {
+		return getMinimumSize();
+	}
+	
+	
 	private static class AddEffectAction extends AbstractAction {
 		JList<ImageManipulation> myFilterlist;
 		ImageRendererListModel listmodel;
 		Class<? extends ImageManipulation> clazz;
+		
+		
 		
 		public AddEffectAction(JList<ImageManipulation> list, ImageRendererListModel model, Class<? extends ImageManipulation> clazz, String actionname) {
 			super(actionname);
@@ -185,6 +196,67 @@ public class FilterPanel extends JPanel{
 			} catch (InstantiationException | IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	
+	
+	private static class DragListener extends MouseAdapter {
+		
+		private boolean isPressed = false;
+		private JList<ImageManipulation> list;
+		private ImageRendererListModel model;
+		private int selectionIndex = -1;
+		private static final boolean debug = false;
+		
+
+		public DragListener(JList<ImageManipulation> list, ImageRendererListModel model) {
+			this.list = list;
+			this.model = model;
+		}
+
+		@Override
+		public void mousePressed(MouseEvent e) {
+			this.isPressed = true;
+			debugMSG("drag start");
+			int index = list.locationToIndex(e.getPoint());
+			if (index != -1 && list.getCellBounds(index, index).contains(e.getPoint())){
+				this.selectionIndex = index;
+				debugMSG("draggin item at index " + index);
+			}
+				
+		}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			this.isPressed = false;
+			debugMSG("drag stop");
+			int index = list.locationToIndex(e.getPoint());
+			if (index != -1 && this.selectionIndex != -1 && list.contains(e.getPoint())){
+				int levelDifference = selectionIndex - index;
+				debugMSG("putting item to location of index " + index);
+				model.liftElement(selectionIndex, levelDifference);
+			}
+			selectionIndex = -1;
+		}
+
+		@Override
+		public void mouseDragged(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		private void debugMSG(String value){
+			if(debug){
+				System.out.println();
 			}
 		}
 		

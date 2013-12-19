@@ -15,14 +15,6 @@ import model.DataOverview;
 
 public class Main {
 	public static void main(String[] args) {
-		ImageContrastManipulation icm = new ImageContrastManipulation();
-		ImageSaturationManipulation ism = new ImageSaturationManipulation();
-//		DataOverview.renderer.addManipulation(new ImageLayer())
-		DataOverview.renderer.addManipulation(new ImageColorMixManipulation());
-		DataOverview.renderer.addManipulation(icm);
-		DataOverview.renderer.addManipulation(ism);
-		DataOverview.renderer.addManipulation(new ImageColorMixManipulation());
-		DataOverview.renderer.addManipulation(new ImageNormalMapGenerator());
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override

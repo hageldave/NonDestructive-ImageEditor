@@ -5,11 +5,13 @@ import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 
+import render.PostRenderAction;
 import model.DataOverview;
 
 @SuppressWarnings("serial")
@@ -33,40 +35,52 @@ public class SaveImageAction extends AbstractAction {
 			}
 		});
 		filedialog.setVisible(true);
-		File[] fa = filedialog.getFiles();
+		final File[] fa = filedialog.getFiles();
 		
-		try {
-			if (fa.length > 0 && fa[0] != null && (fa[0].exists() || fa[0].createNewFile())) {
-				BufferedImage image = DataOverview.renderer.renderFull();
-				if(image == null){ return;}
-				
-				System.out.println(fa[0]);
-				if (fa[0].getName().matches("([^\\s]+(\\.(?i)(jpg|jpeg))$)")) {
-					ImageIO.write(
-							image,
-							"jpg", fa[0]);
-				} else if(fa[0].getName().matches("([^\\s]+(\\.(?i)(png))$)")){
-					ImageIO.write(
-							image,
-							"png", fa[0]);
-				} else if(fa[0].getName().matches("([^\\s]+(\\.(?i)(gif))$)")){
-					ImageIO.write(
-							image,
-							"gif", fa[0]);
-				} else {
-					System.out.println("this one");
-					ImageIO.write(
-							image,
-							"bmp", fa[0]);
+		
+			try {
+				if (fa.length > 0 && fa[0] != null && (fa[0].exists() || fa[0].createNewFile())) {
+					DataOverview.renderer.executeRendering(false, new PostRenderAction("save img") {
+						
+						@Override
+						public void doPostAction(BufferedImage image, boolean wasCancelled) {
+							if(image == null){ return;}
+							
+							System.out.println(fa[0]);
+							try {
+							if (fa[0].getName().matches("([^\\s]+(\\.(?i)(jpg|jpeg))$)")) {
+								ImageIO.write(
+										image,
+										"jpg", fa[0]);
+							} else if(fa[0].getName().matches("([^\\s]+(\\.(?i)(png))$)")){
+								ImageIO.write(
+										image,
+										"png", fa[0]);
+							} else if(fa[0].getName().matches("([^\\s]+(\\.(?i)(gif))$)")){
+								ImageIO.write(
+										image,
+										"gif", fa[0]);
+							} else {
+								System.out.println("this one");
+								ImageIO.write(
+										image,
+										"bmp", fa[0]);
+							}
+							System.out.println("exported");
+							frame.requestFocus();
+							} catch (IOException ex) {
+								ex.printStackTrace();
+							}
+						}
+					});
 				}
-				System.out.println("exported");
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
 		
-		frame.requestFocus();
+		
+		
 	}
 
 }
