@@ -73,7 +73,7 @@ public class ImageColorMixManipulation extends ImageColorManipulation {
 		blue.setMajorTickSpacing(256);
 		blue.setMinorTickSpacing(32);
 		blue.setPaintTicks(true);
-		blue.addChangeListener(new AdjustCompleteChangeListener() {
+		red.addChangeListener(new AdjustCompleteChangeListener() {
 			
 			@Override
 			public void changed(ChangeEvent ev) {
