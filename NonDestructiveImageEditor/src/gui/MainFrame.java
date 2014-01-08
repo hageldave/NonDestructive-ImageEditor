@@ -23,8 +23,10 @@ public class MainFrame extends JFrame {
 	ImagePanel iPanel;
 	FilterPanel fPanel;
 	JMenuBar menubar;
+	
+	static MainFrame instance = new MainFrame();
 
-	public MainFrame() {
+	private  MainFrame() {
 		menubar = new JMenuBar();
 		JMenu menu1 = new JMenu("File");
 		JMenuItem itemopen = new JMenuItem(new OpenImageAction(this));
@@ -59,6 +61,10 @@ public class MainFrame extends JFrame {
 				DataOverview.renderer.executeRendering(true, ipanelUpdate);
 			}
 		});
+	}
+	
+	public static MainFrame getInstance() {
+		return instance;
 	}
 	
 }

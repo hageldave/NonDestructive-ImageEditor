@@ -19,7 +19,7 @@ public class Main {
 
 			@Override
 			public void run() {
-				MainFrame frame = new MainFrame();
+				MainFrame frame = MainFrame.getInstance();
 				frame.setMinimumSize(new Dimension(400, 300));
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				frame.setExtendedState(JFrame.MAXIMIZED_BOTH);

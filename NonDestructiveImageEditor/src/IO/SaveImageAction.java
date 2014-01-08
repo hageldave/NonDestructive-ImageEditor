@@ -1,6 +1,8 @@
 package IO;
 
+import java.awt.Color;
 import java.awt.FileDialog;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -49,8 +51,14 @@ public class SaveImageAction extends AbstractAction {
 							System.out.println(fa[0]);
 							try {
 							if (fa[0].getName().matches("([^\\s]+(\\.(?i)(jpg|jpeg))$)")) {
+								BufferedImage converted = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+								Graphics g = converted.getGraphics();
+								g.setColor(Color.white);
+								g.fillRect(0, 0, converted.getWidth(), converted.getHeight());
+								g.drawImage(image, 0, 0, null);
+								g.dispose();
 								ImageIO.write(
-										image,
+										converted,
 										"jpg", fa[0]);
 							} else if(fa[0].getName().matches("([^\\s]+(\\.(?i)(png))$)")){
 								ImageIO.write(
@@ -61,9 +69,14 @@ public class SaveImageAction extends AbstractAction {
 										image,
 										"gif", fa[0]);
 							} else {
-								System.out.println("this one");
+								BufferedImage converted = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+								Graphics g = converted.getGraphics();
+								g.setColor(Color.white);
+								g.fillRect(0, 0, converted.getWidth(), converted.getHeight());
+								g.drawImage(image, 0, 0, null);
+								g.dispose();
 								ImageIO.write(
-										image,
+										converted,
 										"bmp", fa[0]);
 							}
 							System.out.println("exported");
